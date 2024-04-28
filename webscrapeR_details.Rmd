@@ -1,0 +1,71 @@
+---
+title: "webscrapeR Details"
+output: html_document
+date: "2024-04-26"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Fetch HTML
+This function fetches HTML content from a given URL using the `httr` package.
+
+```{r fetch}
+#' @param url The URL to fetch HTML content from.
+#' @return The fetched HTML content as a character string.
+#' @export
+fetch_html <- function(url) {
+  # Load required library
+  library(httr)
+
+  # Make GET request to fetch HTML content
+  response <- GET(url)
+
+  # Check if request was successful
+  if (http_type(response) == "text/html") {
+    # Extract HTML content from response
+    html_content <- content(response, as = "text")
+    return(html_content)
+  } else {
+    stop("Failed to fetch HTML content. Check the URL and try again.")
+  }
+}
+```
+
+## Parse HTML
+This function parses HTML content using the `rvest` package.
+
+```{r parse}
+#' @param html_content The HTML content to parse.
+#' @return A parsed HTML document object.
+#' @export
+parse_html <- function(html_content) {
+  # Load required library
+  library(rvest)
+
+  # Parse HTML content
+  parsed_html <- read_html(html_content)
+
+  return(parsed_html)
+}
+```
+
+## Extract Elements
+This function extracts specific elements from parsed HTML content using the `rvest` package.
+
+```{r}
+#' @param parsed_html A parsed HTML document object.
+#' @param css_selector CSS selector for the elements to extract.
+#' @return A character vector containing the extracted elements.
+#' @export
+extract_elements <- function(parsed_html, css_selector) {
+  # Load required library
+  library(rvest)
+
+  # Extract elements using CSS selector
+  elements <- html_text(html_nodes(parsed_html, css_selector))
+
+  return(elements)
+}
+```
